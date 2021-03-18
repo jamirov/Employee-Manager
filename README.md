@@ -2,8 +2,8 @@
 
 ## Description 
 * This is a command-line application that runs with Node.js that allows users to view, add, remove employees from database.
-* It has Option that all emplyees can be viewed by Deprtment or Manager.
-* it also can be add a new job or department.
+* It has Option that all emplyees can be viewed by Department or Manager.
+* it allowa to add a new job tile and a new department.
 ## Table of Contents
 
 * [Installation](#installation)
