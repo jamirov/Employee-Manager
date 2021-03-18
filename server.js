@@ -41,14 +41,11 @@ function addEmployeePrompts(){
         type: "list",
         name: "role",
         message: "Who do you want add to your team?",
-        choices: ["Salesperson","Sales Lead","Lead Engineer","Software Engineer","Account Manager","Accountant","Legal Team Lead"],    
+        choices: ["Salesperson","Sales Lead","Lead Engineer","Software Engineer","Accountant","Legal Team Lead","lawer"],    
         }
 
     ])
 }
-
-
-
 
 
 function viewAllEmployees(){
@@ -62,10 +59,7 @@ function viewAllEmployees(){
     ON m.id = e.manager_id`, 
     (err, res) => {
         if (err) throw err;
-        // Log all results of the SELECT statement
-        
         console.table(res);
-        // connection.end();
         start();
     });
       
@@ -83,32 +77,26 @@ function viewAllEmployeesByDepartment(){
         ORDER BY Department`, 
         (err, res) => {
             if (err) throw err;
-            // Log all results of the SELECT statement
-            
             console.table(res);
-            // connection.end();
             start();
         });
 
 };
 
 function viewAllEmployeesByManager(){
-    console.log("View ALL BY Manager");
+    console.log("View ALL Employees By Manager");
     connection.query(
-       `SELECT e.id, e.first_name, e.last_name, m.first_name, m.last_name, role.title, role.salary, department.name AS Department
-        FROM employees e
-        RIGHT JOIN employees m
-        ON e.id = m.manager_id
-        LEFT JOIN role
-        ON m.role_id=role.id
-        LEFT JOIN department
-        ON role.department_id=department.id`, 
+       `SELECT e.id, e.first_name AS ManagerFirstName, e.last_name AS ManagerLastName, m.first_name AS FirstName, m.last_name AS LastName, role.title AS JobTitle, role.salary, department.name AS Department
+       FROM employees e
+       RIGHT JOIN employees m
+       ON e.id = m.manager_id
+       LEFT JOIN role
+       ON m.role_id=role.id
+       LEFT JOIN department
+       ON role.department_id=department.id`, 
         (err, res) => {
             if (err) throw err;
-            // Log all results of the SELECT statement
-            
             console.table(res);
-            // connection.end();
             start();
         });
     
@@ -128,28 +116,139 @@ function addEmployee(){
                 `, 
                  (err, res) => {
                      if (err) throw err;
-                     // Log all results of the SELECT statement
-                     
-                    //  console.table(res);
-                     // connection.end();
                      start();
                  });
 
-        }
-        
+        } else if (response.role === "Sales Lead"){
 
+            const roleid = 1;
+            const managerId = 3;
+            const employee = new Employee (response.eeFirstName, response.eeLastName, roleid, managerId)
+            connection.query(
+                `INSERT INTO employees (first_name, last_name, role_id, manager_id)
+                VALUES ("${employee.fname}","${employee.lname}", ${roleid}, ${managerId});
+                `, 
+                 (err, res) => {
+                     if (err) throw err;
+                     start();
+                 });
+
+
+        } else if (response.role === "Lead Engineer"){
+
+            const roleid = 3;
+            const managerId = "null";
+            const employee = new Employee (response.eeFirstName, response.eeLastName, roleid, managerId)
+            connection.query(
+                `INSERT INTO employees (first_name, last_name, role_id, manager_id)
+                VALUES ("${employee.fname}","${employee.lname}", ${roleid}, ${managerId});
+                `, 
+                 (err, res) => {
+                     if (err) throw err;
+                     start();
+                 });
+
+        } else if (response.role === "Software Engineer"){
+
+            const roleid = 4;
+            const managerId = 3;
+            const employee = new Employee (response.eeFirstName, response.eeLastName, roleid, managerId)
+            connection.query(
+                `INSERT INTO employees (first_name, last_name, role_id, manager_id)
+                VALUES ("${employee.fname}","${employee.lname}", ${roleid}, ${managerId});
+                `, 
+                 (err, res) => {
+                     if (err) throw err;
+                     start();
+                 });
+
+        } else if (response.role === "Accountant"){
+
+            const roleid = 5;
+            const managerId = "null";
+            const employee = new Employee (response.eeFirstName, response.eeLastName, roleid, managerId)
+            connection.query(
+                `INSERT INTO employees (first_name, last_name, role_id, manager_id)
+                VALUES ("${employee.fname}","${employee.lname}", ${roleid}, ${managerId});
+                `, 
+                 (err, res) => {
+                     if (err) throw err;
+                     start();
+                 });
+
+        } else if (response.role === "Legal Team Lead"){
+
+            const roleid = 6;
+            const managerId = "null";
+            const employee = new Employee (response.eeFirstName, response.eeLastName, roleid, managerId)
+            connection.query(
+                `INSERT INTO employees (first_name, last_name, role_id, manager_id)
+                VALUES ("${employee.fname}","${employee.lname}", ${roleid}, ${managerId});
+                `, 
+                 (err, res) => {
+                     if (err) throw err;
+                     start();
+                 });
+        }else if (response.role === "lawer"){
+            const roleid = 7;
+            const managerId = 6;
+            const employee = new Employee (response.eeFirstName, response.eeLastName, roleid, managerId)
+            connection.query(
+                `INSERT INTO employees (first_name, last_name, role_id, manager_id)
+                VALUES ("${employee.fname}","${employee.lname}", ${roleid}, ${managerId});
+                `, 
+                 (err, res) => {
+                     if (err) throw err;
+                     start();
+                 });
+        }
+    })
+
+
+};
+
+function removeEmployee(){
+    console.log(" Removing the Employee");
+    connection.query('SELECT * FROM employees',(err, res)=>{
+        if(err) throw err;
+        inquirer
+        .prompt(
+            {
+            name: 'removeEE',
+            message: 'Please choose Employee whom you want to remove?',
+            type: "list",
+            choices(){
+                const choices = [];
+                res.forEach(({first_name, last_name})=>{
+                    choices.push(`${first_name} ${last_name}`)
+                });
+                return choices;
+                
+            }
+
+            }
+        )
+        .then((answer) => {
+            const str = answer.removeEE;
+            const fname = str.split(' ')[0];
+            const lname = str.split(' ')[1];
+            connection.query(
+                `DELETE FROM employees 
+                WHERE first_name = '${fname}' AND last_name = '${lname}';`, 
+                (err, res) => {
+                    if (err) throw err;
+                });
+            console.log(`Removed employee:${answer.removeEE}`);
+            start();
+
+
+        });
     })
 
 
 
 
     // start();
-
-};
-
-function removeEmployee(){
-    console.log(" Removing the Employee");
-    start();
 };
 
 function updateEmployeeRole(){
@@ -168,7 +267,6 @@ function start(){
         viewAllEmployeesByManager();
     } else if (response.todolist === 'Add Employee'){
         addEmployee();
-        // start();
     } else if (response.todolist === 'Remove Employee'){
         removeEmployee();
     } else if ( response.todolist ==='Upate Employee Role'){
