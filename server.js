@@ -86,14 +86,15 @@ function viewAllEmployeesByDepartment(){
 function viewAllEmployeesByManager(){
     console.log("View ALL Employees By Manager");
     connection.query(
-       `SELECT e.id, e.first_name AS ManagerFirstName, e.last_name AS ManagerLastName, m.first_name AS FirstName, m.last_name AS LastName, role.title AS JobTitle, role.salary, department.name AS Department
+       `SELECT e.id, e.first_name AS ManagerFirstName, e.last_name AS ManagerLastName, m.first_name AS EmployeeFirstName, m.last_name AS EmployeeLastName, role.title AS JobTitle, role.salary, department.name AS Department
        FROM employees e
        RIGHT JOIN employees m
        ON e.id = m.manager_id
        LEFT JOIN role
        ON m.role_id=role.id
        LEFT JOIN department
-       ON role.department_id=department.id`, 
+       ON role.department_id=department.id
+       ORDER BY e.id`, 
         (err, res) => {
             if (err) throw err;
             console.table(res);
@@ -116,6 +117,7 @@ function addEmployee(){
                 `, 
                  (err, res) => {
                      if (err) throw err;
+                     console.log(`Employee ${employee.fname}${employee.lname} has been added`);
                      start();
                  });
 
@@ -130,6 +132,7 @@ function addEmployee(){
                 `, 
                  (err, res) => {
                      if (err) throw err;
+                     console.log(`Employee ${employee.fname}${employee.lname} has been added`);
                      start();
                  });
 
@@ -145,6 +148,7 @@ function addEmployee(){
                 `, 
                  (err, res) => {
                      if (err) throw err;
+                     console.log(`Employee ${employee.fname}${employee.lname} has been added`);
                      start();
                  });
 
@@ -159,6 +163,7 @@ function addEmployee(){
                 `, 
                  (err, res) => {
                      if (err) throw err;
+                     console.log(`Employee ${employee.fname}${employee.lname} has been added`);
                      start();
                  });
 
@@ -173,6 +178,7 @@ function addEmployee(){
                 `, 
                  (err, res) => {
                      if (err) throw err;
+                     console.log(`Employee ${employee.fname}${employee.lname} has been added`);
                      start();
                  });
 
@@ -187,6 +193,7 @@ function addEmployee(){
                 `, 
                  (err, res) => {
                      if (err) throw err;
+                     console.log(`Employee ${employee.fname}${employee.lname} has been added`);
                      start();
                  });
         }else if (response.role === "lawer"){
@@ -199,6 +206,7 @@ function addEmployee(){
                 `, 
                  (err, res) => {
                      if (err) throw err;
+                     console.log(`Employee ${employee.fname}${employee.lname} has been added`);
                      start();
                  });
         }
@@ -245,10 +253,6 @@ function removeEmployee(){
         });
     })
 
-
-
-
-    // start();
 };
 
 function updateEmployeeRole(){
