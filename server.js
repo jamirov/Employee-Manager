@@ -257,9 +257,73 @@ function removeEmployee(){
 
 function updateEmployeeRole(){
     console.log("Updating Employee Role");
-    start();
-};
+    connection.query(`
+    SELECT * 
+    FROM employees AS e
+    JOIN role ON e.role_id=role.id`,(err, res)=> {
+        if(err) throw err;
+        inquirer
+        .prompt([
+            {
+            name: 'updateEE',
+            message: 'Please choose Employee whom you want to update?',
+            type: "list",
+            choices(){
+                const choices = [];
+                res.forEach(({first_name, last_name})=>{
+                    choices.push(`${first_name} ${last_name}`)
+                });
+                return choices;
+                
+            }
+            },
+            {
+                name: 'role',
+                message: 'Please choose new role?',
+                type: "list",
+                choices(){
+                    const choices = [];
+                    res.forEach(({title})=>{
+                        choices.push(`${title}`)
+                    });
+                    return choices;
+                    
+                }
+                }
+        ])
+        .then((answer) => {
+            const str = answer.updateEE;
+            const fname = str.split(' ')[0];
+            const lname = str.split(' ')[1];
+            var roleID = 0;
+            if (answer.role === "Sales Lead"){
+                var roleID = 1;
+            } else if (answer.role === "Salesperson"){
+                var roleID = 2;
+            } else if (answer.role === "Lead Engineer"){
+                var roleID = 3;
+            } else if (answer.role === "Software Engineer"){
+                var roleID = 4;
+            } else if (answer.role === "Accountant"){
+                var roleID = 5;
+            } else if (answer.role === "Legal Team Lead"){
+                var roleID = 6;
+            } else if (answer.role === "Lawyer"){
+                var roleID = 7;
+            };
+           connection.query(
+                `UPDATE employees
+                SET role_id = ${roleID}
+                WHERE first_name="${fname}" AND last_name="${lname}";`, 
+                (err, res) => {
+                    if (err) throw err;
+                });
+            console.log(`Updated employee:${answer.updateEE} role to ${answer.role}`);
+            start();
 
+    })
+    }
+    )};
 
 function start(){
     mainPromts().then(function(response){
@@ -282,6 +346,6 @@ function start(){
 };
 connection.connect((err) => {
     if (err) throw err;
-    // run the start function after the connection is made to prompt the user
+   
     start();
   });
